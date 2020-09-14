@@ -256,6 +256,7 @@ module.exports = class Guest extends Delegator
         highlights = highlighter.highlightRange(normedRange)
 
         $(highlights).data('annotation', anchor.annotation)
+
         anchor.highlights = highlights
         return anchor
 
@@ -402,7 +403,17 @@ module.exports = class Guest extends Delegator
   showAnnotations: (annotations) ->
     tags = (a.$tag for a in annotations)
     @crossframe?.call('showAnnotations', tags)
-    @crossframe?.call('showSidebar')
+    # @crossframe?.call('showSidebar') # prevent sidebar from showing [CG]
+
+  # Open annotation in new tab if text contains a url. NOT DONE [CG]
+  openAnnotationInTab: (annotation) ->
+    console.log('openAnnotationInTab: ', annotation) # DEBUG
+    # open url in a new tab
+    url = 'https://web.archive.org' # TEST
+    # right now links doesn't exist
+    if annotation.links and annotation.links.html
+      url = annotation.links.html
+    $('<a />', { href: url, target: '_blank', rel: 'noopener noreferrer' }).get(0).click()
 
   toggleAnnotationSelection: (annotations) ->
     tags = (a.$tag for a in annotations)
@@ -416,6 +427,11 @@ module.exports = class Guest extends Delegator
     tags = (a.$tag for a in annotations)
     @crossframe?.call('focusAnnotations', tags)
 
+    # Underline all fragments when hovering over annotation. [CG]
+    for anchor in @anchors when anchor.highlights?
+      toggle = anchor.annotation.$tag in tags
+      $(anchor.highlights).toggleClass('hypothesis-highlight-underline', toggle)
+
   _onSelection: (range) ->
     selection = document.getSelection()
     isBackwards = rangeUtil.isSelectionBackwards(selection)
@@ -428,9 +444,10 @@ module.exports = class Guest extends Delegator
     @selectedRanges = [range]
     @toolbar?.newAnnotationType = 'annotation'
 
-    {left, top, arrowDirection} = this.adderCtrl.target(focusRect, isBackwards)
-    this.adderCtrl.annotationsForSelection = annotationsForSelection()
-    this.adderCtrl.showAt(left, top, arrowDirection)
+    # Commented out to prevent Adder context menu from displaying. [CG]
+    # {left, top, arrowDirection} = this.adderCtrl.target(focusRect, isBackwards)
+    # this.adderCtrl.annotationsForSelection = annotationsForSelection()
+    # this.adderCtrl.showAt(left, top, arrowDirection)
 
   _onClearSelection: () ->
     this.adderCtrl.hide()
@@ -490,6 +507,7 @@ module.exports = class Guest extends Delegator
     if event.target is event.currentTarget
       xor = (event.metaKey or event.ctrlKey)
       setTimeout => this.selectAnnotations(annotations, xor)
+      this.openAnnotationInTab annotation # [CG]
 
   # Pass true to show the highlights in the frame or false to disable.
   setVisibleHighlights: (shouldShowHighlights) ->

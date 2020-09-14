@@ -51,9 +51,15 @@ $color-quote: #58cef4;
 $color-focus-outline: #51a7e8;
 $color-focus-shadow: color.scale($color-focus-outline, $alpha: -50%);
 
-$color-highlight: rgba(255, 255, 60, 0.4);
-$color-highlight-second: rgba(206, 206, 60, 0.4);
-$color-highlight-focused: rgba(156, 230, 255, 0.5);
+// yellow (original)
+//$color-highlight: rgba(255, 255, 60, 0.4);
+//$color-highlight-second: rgba(206, 206, 60, 0.4);
+//$color-highlight-focused: rgba(156, 230, 255, 0.5);
+
+// blue [CG]
+$color-highlight: rgba(0, 128, 255, 0.4);
+$color-highlight-second: rgba(0, 100, 200, 0.4);
+$color-highlight-focused: rgba(0, 128, 255, 0.4);
 
 // Scaffolding
 // -------------------------

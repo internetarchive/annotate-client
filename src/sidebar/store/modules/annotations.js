@@ -240,6 +240,7 @@ const actions = util.actionTypes(update);
  * @param {Annotation[]} annotations - Array of annotation objects to add.
  */
 function addAnnotations(annotations) {
+  console.log(annotations) // DEBUG [CG]
   return function (dispatch, getState) {
     const added = annotations.filter(annot => {
       return !findByID(getState().annotations.annotations, annot.id);

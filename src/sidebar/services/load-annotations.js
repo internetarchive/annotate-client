@@ -63,6 +63,7 @@ export default function loadAnnotationsService(
     });
     store.annotationFetchStarted();
     searchClient.get({ uri: uris, group: groupId });
+    // searchClient.get({ uri: uris, group: 'iatest' }); // TEST [CG]
   }
 
   /**
