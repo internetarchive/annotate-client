@@ -7,7 +7,8 @@ highlighter = require('../highlighter')
 
 BUCKET_SIZE = 16                              # Regular bucket size
 BUCKET_NAV_SIZE = BUCKET_SIZE + 6             # Bucket plus arrow (up/down)
-BUCKET_TOP_THRESHOLD = 115 + BUCKET_NAV_SIZE  # Toolbar
+# BUCKET_TOP_THRESHOLD = 115 + BUCKET_NAV_SIZE  # Toolbar
+BUCKET_TOP_THRESHOLD = 27 + BUCKET_NAV_SIZE  # Toolbar [CG]
 
 
 # Scroll to the next closest anchor off screen in the given direction.
@@ -250,9 +251,10 @@ module.exports = class BucketBar extends Plugin
         else if (@isLower bucket)
           scrollToClosest(@buckets[bucket], 'down')
         else
-          annotations = (anchor.annotation for anchor in @buckets[bucket])
-          @annotator.selectAnnotations annotations,
-            (event.ctrlKey or event.metaKey),
+          # Commented out to prevent sidebar from opening [CG]
+          # annotations = (anchor.annotation for anchor in @buckets[bucket])
+          # @annotator.selectAnnotations annotations,
+          #   (event.ctrlKey or event.metaKey),
 
     this._buildTabs(@tabs, @buckets)
 
@@ -263,9 +265,9 @@ module.exports = class BucketBar extends Plugin
       bucketLength = bucket?.length
 
       title = if bucketLength != 1
-        "Show #{bucketLength} annotations"
+        "#{bucketLength} annotations"
       else if bucketLength > 0
-        'Show one annotation'
+        '1 annotation'
 
       el.attr('title', title)
       el.toggleClass('upper', @isUpper(d))

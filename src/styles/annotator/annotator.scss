@@ -76,6 +76,7 @@ $sidebar-collapse-transition-time: 150ms;
     left: -(var.$bucket-bar-width + 18px - 7px);
     width: 37px;
     z-index: 2;
+    display: none; // [CG]
   }
 
   .annotator-frame-button {

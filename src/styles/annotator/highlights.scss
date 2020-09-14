@@ -66,11 +66,17 @@
     // When an annotation card is hovered in the sidebar, the corresponding
     // highlights are shown with a "focused" color.
     &.hypothesis-highlight-focused {
-      background-color: var.$color-highlight-focused !important;
+      // background-color: var.$color-highlight-focused !important;
+      background-color: transparent !important; // don't highlight [CG]
 
       .hypothesis-highlight {
         background-color: transparent !important;
       }
+    }
+
+    // Underline when annotation hovered over [CG]
+    &.hypothesis-highlight-underline {
+      border-bottom: 2px solid #08f;
     }
   }
 }
