@@ -45,8 +45,9 @@ export default class SearchClient extends TinyEmitter {
         sort: 'created',
         order: 'asc',
         _separate_replies: this._separateReplies,
-        tag: 'iatest1' // [CG]
+        //tag: 'iatest1' // [CG]
         //group: 'iatest' // group overridden by query obj! [CG]
+        user: 'acct:caslonkahle@hypothes.is' // TEST with user account [CG]
       },
       query
     );

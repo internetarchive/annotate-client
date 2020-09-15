@@ -13,6 +13,8 @@ import { watch } from '../util/watch';
  * Because this representation will be exposed to untrusted third-party
  * JavaScript, it includes only the information needed to uniquely identify it
  * within the current session and anchor it in the document.
+ *
+ * Added links & text to annotation sent. [CG]
  */
 export function formatAnnot(ann) {
   return {
@@ -21,6 +23,8 @@ export function formatAnnot(ann) {
       document: ann.document,
       target: ann.target,
       uri: ann.uri,
+      links: ann.links,
+      text: ann.text,
     },
   };
 }
