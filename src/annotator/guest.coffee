@@ -405,14 +405,25 @@ module.exports = class Guest extends Delegator
     @crossframe?.call('showAnnotations', tags)
     # @crossframe?.call('showSidebar') # prevent sidebar from showing [CG]
 
-  # Open annotation in new tab if text contains a url. NOT DONE [CG]
+  # Open annotation in new tab if text contains a url. [CG]
   openAnnotationInTab: (annotation) ->
     console.log('openAnnotationInTab: ', annotation) # DEBUG
-    # open url in a new tab
-    url = 'https://web.archive.org' # TEST
-    # right now links doesn't exist
-    if annotation.links and annotation.links.html
+    url = 'https://web.archive.org' # default URL
+
+    # Extract URL from markdown text
+    text = annotation.text
+    regx = new RegExp('\((https?:[^)]+)\)')
+
+    if text and regx.test(text)
+      # There's a URL in the text, use it
+      matches = regx.exec(text)
+      url = matches[1]
+
+    else if annotation.links and annotation.links.html
+      # No URL in text, use links instead
       url = annotation.links.html
+
+    # Create and open the link
     $('<a />', { href: url, target: '_blank', rel: 'noopener noreferrer' }).get(0).click()
 
   toggleAnnotationSelection: (annotations) ->
