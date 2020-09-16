@@ -405,25 +405,29 @@ module.exports = class Guest extends Delegator
     @crossframe?.call('showAnnotations', tags)
     # @crossframe?.call('showSidebar') # prevent sidebar from showing [CG]
 
-  # Open annotation in new tab if text contains a url. [CG]
-  openAnnotationInTab: (annotation) ->
-    console.log('openAnnotationInTab: ', annotation) # DEBUG
+  # Return a URL from annotation. [CG]
+  extractLinkFromAnnotation: (annotation) ->
     url = 'https://web.archive.org' # default URL
-
     # Extract URL from markdown text
     text = annotation.text
-    regx = new RegExp('\((https?:[^)]+)\)')
-
-    if text and regx.test(text)
-      # There's a URL in the text, use it
-      matches = regx.exec(text)
+    regx1 = /(www[^\s\)]+)/
+    regx2 = /(https?:[^\s\)]+)/
+    if text and regx1.test(text)
+      # www URL in text missing schema
+      matches = regx1.exec(text)
+      url = 'http://' + matches[1]
+    else if text and regx2.test(text)
+      # Use URL in the text
+      matches = regx2.exec(text)
       url = matches[1]
-
     else if annotation.links and annotation.links.html
       # No URL in text, use links instead
       url = annotation.links.html
+    return url
 
-    # Create and open the link
+  # Open annotation in new tab if text contains a url. [CG]
+  openAnnotationInTab: (annotation) ->
+    url = this.extractLinkFromAnnotation(annotation)
     $('<a />', { href: url, target: '_blank', rel: 'noopener noreferrer' }).get(0).click()
 
   toggleAnnotationSelection: (annotations) ->
@@ -438,10 +442,12 @@ module.exports = class Guest extends Delegator
     tags = (a.$tag for a in annotations)
     @crossframe?.call('focusAnnotations', tags)
 
-    # Underline all fragments when hovering over annotation. [CG]
+    # Underline all fragments & add tooltip when hovering over annotation. [CG]
     for anchor in @anchors when anchor.highlights?
       toggle = anchor.annotation.$tag in tags
       $(anchor.highlights).toggleClass('hypothesis-highlight-underline', toggle)
+      url = this.extractLinkFromAnnotation(anchor.annotation)
+      $(anchor.highlights).attr('title', url)
 
   _onSelection: (range) ->
     selection = document.getSelection()
@@ -518,7 +524,7 @@ module.exports = class Guest extends Delegator
     if event.target is event.currentTarget
       xor = (event.metaKey or event.ctrlKey)
       setTimeout => this.selectAnnotations(annotations, xor)
-      this.openAnnotationInTab annotation # [CG]
+      this.openAnnotationInTab(annotation) # [CG]
 
   # Pass true to show the highlights in the frame or false to disable.
   setVisibleHighlights: (shouldShowHighlights) ->
