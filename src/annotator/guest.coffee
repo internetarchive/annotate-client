@@ -410,10 +410,15 @@ module.exports = class Guest extends Delegator
     url = 'https://web.archive.org' # default URL
     # Extract URL from markdown text
     text = annotation.text
-    regx = new RegExp('\((https?:[^)]+)\)')
-    if text and regx.test(text)
-      # There's a URL in the text, use it
-      matches = regx.exec(text)
+    regx1 = /(www[^\s\)]+)/
+    regx2 = /(https?:[^\s\)]+)/
+    if text and regx1.test(text)
+      # www URL in text missing schema
+      matches = regx1.exec(text)
+      url = 'http://' + matches[1]
+    else if text and regx2.test(text)
+      # Use URL in the text
+      matches = regx2.exec(text)
       url = matches[1]
     else if annotation.links and annotation.links.html
       # No URL in text, use links instead
